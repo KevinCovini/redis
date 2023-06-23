@@ -37,7 +37,7 @@ def insertProposal(p_number=1):
             "Insert name(s) of the proposer(s): ")).split()
         proposal_title = input("Insert the title of the proposal: ")
         proposal_desc = input("Insert the description of the proposal: ")
-        r.hset(f"{proposal_titl} proposta", mapping={
+        r.hset(f"{proposal_title} proposta", mapping={
             "Titolo": proposal_title,
             "Descrizione": proposal_desc
         })
@@ -46,17 +46,15 @@ def insertProposal(p_number=1):
 
 
 def showProposal():
-    for n in range(int(r.get("proposal_key"))):
-        proposal_dict = r.hgetall(f"proposal:{n}")
-        proposers = r
-        proposal_str = f'''
-            Proposta: {proposal_dict["proposal_title"]}
-            Descrizione:
-            Autori:
-            Voti:
-        '''
-        print(proposal_dict)
-
+    for i, key in enumerate(r.keys("*proposta")):
+        print(f"{i+1}. {r.hgetall(key)[b'Titolo'].decode()} (", end="")
+        for prop in r.smembers(f"{key.decode()[:-8]}proponenti"):
+            print(prop.decode(), end=", ")
+        print(")", end=": ")
+        try:
+            print(r.scard(f"{key.decode()[:-8]}votanti"), end=" voti\n")
+        except ValueError:
+            print("0 voti\n")
 
 def voteProposal():
     # inserisci cognome (login)
@@ -76,4 +74,4 @@ def voteProposal():
 
 if __name__ == "__main__":
     # insertProposal()
-    r.flushall()
+    showProposal()
