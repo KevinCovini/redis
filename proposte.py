@@ -11,17 +11,24 @@ r = rd.Redis(
   password='uUlKJLiadqj12nYHVKcwK9TowwyuXrvb')
 
 ''' Templates
-PROPOSAL_TEMPLATE = {
-    "id" : id
-    "proposers" : [
-        "Pippo",
-        "Paperino",
-        "Pluto"
-    ],
-    "proposal_title" : "title of the proposal",
-    "proposal_description" : "description of the proposal",
-    "votes" : 0
+
+macchinette = {
+    titolo: "macchinette",
+    descrizione: "macchinette buone",
 }
+
+macchinette_proponenti = set(
+    "Pippo",
+    "Paperino",
+    "Pluto"
+)
+
+macchinette_votanti = set(
+    "Pippo",
+    "Paperino",
+    "Pluto"
+)
+
 '''
 
 try:
@@ -67,3 +74,4 @@ if __name__ == "__main__":
     voteProposal()
     r.flushall()
     '''
+
