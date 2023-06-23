@@ -36,7 +36,7 @@ try:
 except TypeError:
     r.set("proposal_key", 0)
     proposal_key = 0
-print(f"Current proposal key: {proposal_key}")  
+print(f"Current proposal key: {proposal_key}")
 
     
 def insertProposal(p_number = 1):
@@ -50,11 +50,12 @@ def insertProposal(p_number = 1):
           "proposers": f"proposal:{proposal_key}",
           "proposal_title": proposal_title,
           "proposal_description": proposal_desc,
-          "Votes": 0
+          "votes": 0
           })
+      r.sadd()
       r.incr("proposal_key")
 
-def voteProposal():
+def showProposal():
     for n in range(int(r.get("proposal_key"))):
         proposal_dict = r.hgetall(f"proposal:{n}")
         proposers = r
@@ -68,10 +69,29 @@ def voteProposal():
 
 
 
+def voteProposal():
+    # inserisci cognome (login)
+    # inserisci id proposta
+    # se hai già votato la proposta vai a fare in culo
+    # altrimenti: cognome -> db (proposta.lista votanti), voti+=1
+
+    cognome = input("Insert last name: ")
+    proposal_id = input("Insert proposal ID: ")
+
+    if r.sismember(f"voters:{proposal_id}", cognome):
+        print("You already voted this proposal.")
+    else:
+        r.sadd(f"voters:{proposal_id}", cognome)
+        r.hincrby(f"proposal:{proposal_id}","votes")
+
+
+
+
 if __name__ == "__main__":
     '''
     print("Start")
     voteProposal()
     r.flushall()
+    menu testuale
     '''
 
