@@ -40,12 +40,14 @@ def insertProposal(p_number=1):
             "Inserisci cognome/i dei proponenti: ")).split()
         proposal_title = input("Inserisci il nome della proposta: ")
         proposal_desc = input("Inserisci la descrizione della proposta: ")
-        r.hset(f"{proposal_title} proposta", mapping={
-            "Titolo": proposal_title,
-            "Descrizione": proposal_desc
-        })
+        if not r.hexists("proposta:{proposal_title}"):
+            r.hset(f"{proposal_title} proposta", mapping={
+                "Titolo": proposal_title,
+                "Descrizione": proposal_desc
+            })
         for prop in proposers:
             r.sadd(f"{proposal_title} proponenti", prop)
+
 
 
 def showProposal():
@@ -67,14 +69,15 @@ def voteProposal():
     Se la proposta non è già stata votata verrà inserita la votazione per la proposta corrispondente.
     '''
 
-    name = input("Insert last name: ")
-    proposal_name = input("Insert proposal name: ")
+    name = input("Inserisci il tuo cognome: ")
+    proposal_name = input("Inserisci il nome della proposta: ")
+    set_votanti = f"{proposal_name} votanti"
 
-    if r.sismember(f"{proposal_name} votanti", name):
-        print("You already voted this proposal.")
+    if r.sismember(set_votanti, name):
+        print("Hai già votato questa proposta.")
     else:
-        r.sadd(f"{proposal_name} votanti", name)
-        showProposal()
+        r.sadd(set_votanti, name)
+        print(f"Voti attuali della proposta: {r.scard(set_votanti)}")
     print("\n")
     
 def descProposal():
