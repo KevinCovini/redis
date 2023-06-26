@@ -72,3 +72,28 @@ def descProposal():
         print(f"{i+1}. {r.hgetall(key)[b'Titolo'].decode()}", end=" (")
         print(f"{r.hgetall(key)[b'Descrizione'].decode()})")
 
+if __name__ == "__main__":
+    while True:
+        while True:
+            try:
+                print("1. Vedi le descrizioni delle proposte")
+                print("2. Vota una proposta")
+                print("3. Crea una proposta")
+                print("4: Esci")
+                choice = int(input("Cosa vuoi fare: "))
+            except ValueError:
+                print("Valore non accettato. Riprova")
+                continue
+            else:
+                break
+            
+
+        match choice:
+            case 1:
+                descProposal()
+            case 2:
+                voteProposal()
+            case 3:
+                insertProposal()
+            case 4:
+                break
