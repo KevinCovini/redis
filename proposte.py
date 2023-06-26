@@ -67,3 +67,8 @@ def voteProposal():
         r.sadd(f"{proposal_name} votanti", name)
         showProposal()
 
+def descProposal():
+    for i, key in enumerate(r.keys("*proposta")):
+        print(f"{i+1}. {r.hgetall(key)[b'Titolo'].decode()}", end=" (")
+        print(f"{r.hgetall(key)[b'Descrizione'].decode()})")
+
