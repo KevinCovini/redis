@@ -30,6 +30,7 @@ macchinette_votanti = set(
 )
 '''
 
+
 def insertProposal(p_number=1):
     '''Funzione di inserimento proposta richedendo queste info:
     Proponenti (chi fa la proposta), titolo e descrizione.
@@ -40,28 +41,28 @@ def insertProposal(p_number=1):
             "Inserisci cognome/i dei proponenti: ")).split()
         proposal_title = input("Inserisci il nome della proposta: ")
         proposal_desc = input("Inserisci la descrizione della proposta: ")
-        if not r.hexists("proposta:{proposal_title}"):
-            r.hset(f"{proposal_title} proposta", mapping={
+        if not r.exists(f"proposta:{proposal_title}"):
+            r.hset(f"proposta:{proposal_title}", mapping={
                 "Titolo": proposal_title,
                 "Descrizione": proposal_desc
             })
         for prop in proposers:
-            r.sadd(f"{proposal_title} proponenti", prop)
-
+            r.sadd(f"proponenti:{proposal_title}", prop)
 
 
 def showProposal():
     '''Stampa tutte le proposte inserite in DB'''
-    for i, key in enumerate(r.keys("*proposta")):
+    for i, key in enumerate(r.keys("proposta:*")):
         print(f"{i+1}. {r.hgetall(key)[b'Titolo'].decode()} (", end="")
-        for prop in r.smembers(f"{key.decode()[:-8]}proponenti"):
+        for prop in r.smembers(f"proponenti:{key.decode()[9:]}"):
             print(prop.decode(), end=", ")
         print(")", end=": ")
         try:
-            print(r.scard(f"{key.decode()[:-8]}votanti"), end=" voti\n")
+            print(r.scard(f"votanti:{key.decode()[9:]}"), end=" voti\n")
         except ValueError:
             print("0 voti\n")
     print("\n")
+
 
 def voteProposal():
     '''Richiede Cognome e ID proposta per inserire la votazione di essa:
@@ -71,7 +72,7 @@ def voteProposal():
 
     name = input("Inserisci il tuo cognome: ")
     proposal_name = input("Inserisci il nome della proposta: ")
-    set_votanti = f"{proposal_name} votanti"
+    set_votanti = f"votanti:{proposal_name}"
 
     if r.sismember(set_votanti, name):
         print("Hai già votato questa proposta.")
@@ -79,9 +80,10 @@ def voteProposal():
         r.sadd(set_votanti, name)
         print(f"Voti attuali della proposta: {r.scard(set_votanti)}")
     print("\n")
-    
+
+
 def descProposal():
-    for i, key in enumerate(r.keys("*proposta")):
+    for i, key in enumerate(r.keys("proposta:*")):
         print(f"{i+1}. {r.hgetall(key)[b'Titolo'].decode()}", end=" (")
         print(f"{r.hgetall(key)[b'Descrizione'].decode()})")
     print("\n")
@@ -103,7 +105,6 @@ if __name__ == "__main__":
                 continue
             else:
                 break
-            
 
         match choice:
             case 1:
