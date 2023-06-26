@@ -56,6 +56,7 @@ def showProposal():
             print(r.scard(f"{key.decode()[:-8]}votanti"), end=" voti\n")
         except ValueError:
             print("0 voti\n")
+    print("\n")
 
 def voteProposal():
     name = input("Insert last name: ")
@@ -66,21 +67,26 @@ def voteProposal():
     else:
         r.sadd(f"{proposal_name} votanti", name)
         showProposal()
+    print("\n")
 
 def descProposal():
     for i, key in enumerate(r.keys("*proposta")):
         print(f"{i+1}. {r.hgetall(key)[b'Titolo'].decode()}", end=" (")
         print(f"{r.hgetall(key)[b'Descrizione'].decode()})")
+    print("\n")
 
 if __name__ == "__main__":
     while True:
+        showProposal()
         while True:
             try:
                 print("1. Vedi le descrizioni delle proposte")
                 print("2. Vota una proposta")
                 print("3. Crea una proposta")
                 print("4: Esci")
+                print("\n")
                 choice = int(input("Cosa vuoi fare: "))
+                print("\n")
             except ValueError:
                 print("Valore non accettato. Riprova")
                 continue
