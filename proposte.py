@@ -27,7 +27,6 @@ macchinette_votanti = set(
     "Paperino",
     "Pluto"
 )
-
 '''
 
 def insertProposal(p_number=1):
@@ -71,8 +70,6 @@ def voteProposal():
         print("Hai già votato per questa proposta")
     else:
         r.sadd(f"voters:{proposal_id}", cognome)
-        r.hincrby(f"proposal:{proposal_id}", "votes")
-
 
 if __name__ == "__main__":
     # insertProposal()
