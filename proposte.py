@@ -7,7 +7,8 @@ import pandas as pd
 r = rd.Redis(
     host='redis-12900.c300.eu-central-1-1.ec2.cloud.redislabs.com',
     port=12900,
-    password='uUlKJLiadqj12nYHVKcwK9TowwyuXrvb')
+    password='uUlKJLiadqj12nYHVKcwK9TowwyuXrvb'
+)
 
 ''' Templates
 
@@ -57,21 +58,12 @@ def showProposal():
             print("0 voti\n")
 
 def voteProposal():
-    # inserisci cognome (login)
-    # inserisci id proposta
-    # se hai già votato la proposta vai a fare in culo
-    # altrimenti: cognome -> db (proposta.lista votanti), voti+=1
+    name = input("Insert last name: ")
+    proposal_name = input("Insert proposal name: ")
 
-    cognome = input("Insert last name: ")
-    proposal_id = input("Insert proposal ID: ")
-
-    if r.sismember(f"voters:{proposal_id}", cognome):
+    if r.sismember(f"{proposal_name} votanti", name):
         print("You already voted this proposal.")
     else:
-        r.sadd(f"voters:{proposal_id}", cognome)
-        r.hincrby(f"proposal:{proposal_id}", "votes")
+        r.sadd(f"{proposal_name} votanti", name)
+        showProposal()
 
-
-if __name__ == "__main__":
-    # insertProposal()
-    showProposal()
