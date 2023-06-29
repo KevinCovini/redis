@@ -65,7 +65,7 @@ def showProposal():
 
 
 def voteProposal():
-    '''Richiede Cognome e ID proposta per inserire la votazione di essa:
+    '''Richiede Cognome e titolo proposta per inserire la votazione di essa:
     se la proposta è già stata votata non viene effettuata nessuna operazione sul DB;
     Se la proposta non è già stata votata verrà inserita la votazione per la proposta corrispondente.
     '''
